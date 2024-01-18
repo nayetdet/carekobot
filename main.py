@@ -187,12 +187,13 @@ async def say(ctx):
     for content, name in findall(r'(<:(\w+):\d+>)', text):
         text = text.replace(content, name)
 
-    match = search(r'(?i)^\[(t\/)?([A-Z]{2})\]\s\S', text)
-    if match:
+    match = search(r'(?i)^\[(t\/)?([A-Z]{2})\]\s(.+)', text)
+    if match is not None:
         lang = match.group(2).lower()
-        text = text[text.find(']') + 2:]
-        if match.group(1):
-            if lang in bot.langs.values(): text = Translator().translate(text = text, dest = lang).text
+        text = match.group(3)
+        if match.group(1) is not None:
+            if lang in bot.langs.values(): 
+                text = Translator().translate(text, lang).text
             else: 
                 await send_msg('Linguagem indisponível.\nProsseguindo com o idioma padrão deste servidor...', ctx, 5)
                 with open(json_path) as file:
@@ -211,7 +212,8 @@ async def say(ctx):
                     message, speech = queue[0]
                     gTTS(text = message, lang = speech, tld = 'com.br').write_to_fp(fp)
                     fp.seek(0)
-                except AssertionError: await send_msg('Por favor, insira um texto válido.', ctx, 5)
+                except AssertionError:
+                    await send_msg('Por favor, insira um texto válido.', ctx, 5)
                 else:
                     try: ctx.voice_client.play(FFmpegPCMAudioGTTS(fp.read(), pipe=True))
                     except: await sleep(0.5)
