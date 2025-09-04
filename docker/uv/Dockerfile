@@ -16,6 +16,17 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Runtime Stage
 FROM python:3.13-slim-bookworm
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONPATH=/app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 COPY --from=builder --chown=app:app /app /app
 ENV PATH="/app/.venv/bin:$PATH"
-CMD []
+CMD ["python", "-m", "src.carekobot.main"]

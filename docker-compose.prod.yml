@@ -1,5 +1,5 @@
 services:
-  api:
+  carekobot:
     build:
       context: .
       dockerfile: ./docker/uv/Dockerfile
@@ -12,7 +12,6 @@ services:
       BOT_TTS_API_URL: ${BOT_TTS_API_URL}
       BOT_TTS_VOICE_MODEL: ${BOT_TTS_VOICE_MODEL}
       BOT_DISCORD_TOKEN: ${BOT_DISCORD_TOKEN}
-    entrypoint: ["python", "-m", "src.carekobot.main"]
     restart: unless-stopped
 
   kokoro:
