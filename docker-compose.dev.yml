@@ -1,0 +1,6 @@
+services:
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
+    container_name: carekobot_kokoro
+    ports:
+      - "8880:8880"
