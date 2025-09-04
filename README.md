@@ -4,7 +4,7 @@ O CarekoBot é um bot Discord desenvolvido em Python, utilizando a biblioteca di
 # Comandos
 <br />
 
-> ![commands](https://imgur.com/ZKpuAst)
+> ![commands](https://i.imgur.com/ZKpuAst.png)
 > * O prefixo padrão utilizado para invocar os comandos é "=".<br />
 > * Optei por não oferecer suporte aos comandos de barra porque simplesmente não gosto deles.<br />
 
