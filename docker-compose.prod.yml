@@ -8,8 +8,10 @@ services:
       kokoro:
         condition: service_started
     environment:
-      TTS_HOST: ${TTS_HOST}
-      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      BOT_DEFAULT_PREFIX: ${BOT_DEFAULT_PREFIX}
+      BOT_TTS_API_URL: ${BOT_TTS_API_URL}
+      BOT_TTS_VOICE_MODEL: ${BOT_TTS_VOICE_MODEL}
+      BOT_DISCORD_TOKEN: ${BOT_DISCORD_TOKEN}
     entrypoint: ["python", "-m", "src.carekobot.main"]
     restart: unless-stopped
 
