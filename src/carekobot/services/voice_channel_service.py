@@ -7,7 +7,7 @@ class VoiceChannelService:
     @classmethod
     async def join(cls, ctx: commands.Context, notify_on_success: bool = True) -> None:
         if not ctx.author.voice or not ctx.author.voice.channel:
-            await MiscellaneousService.send(ctx, "Por favor, conecte-se a um canal de voz!")
+            await MiscellaneousService.send(ctx, arg="Por favor, conecte-se a um canal de voz!")
             return
 
         voice_channel: Optional[VoiceChannel] = ctx.author.voice.channel
@@ -15,25 +15,25 @@ class VoiceChannelService:
 
         if voice_client:
             if notify_on_success and voice_client.channel.id == voice_channel.id:
-                await MiscellaneousService.send(ctx, "Já estou conectado ao seu canal de voz!")
+                await MiscellaneousService.send(ctx, arg="Já estou conectado ao seu canal de voz!")
                 return
 
             await voice_client.move_to(voice_channel)
         else: await voice_channel.connect()
         if notify_on_success:
-            await ctx.message.add_reaction("☑")
+            await MiscellaneousService.react(ctx)
 
     @classmethod
     async def leave(cls, ctx: commands.Context, notify_on_success: bool = True) -> None:
         if not ctx.author.voice or not ctx.author.voice.channel:
-            await MiscellaneousService.send(ctx, "Você precisa estar em um canal de voz para me desconectar!")
+            await MiscellaneousService.send(ctx, arg="Você precisa estar em um canal de voz para me desconectar!")
             return
 
         voice_client: Optional[VoiceClient] = ctx.guild.voice_client
         if not voice_client:
-            await MiscellaneousService.send(ctx, "Não estou conectado a nenhum canal de voz!")
+            await MiscellaneousService.send(ctx, arg="Não estou conectado a nenhum canal de voz!")
             return
 
         await voice_client.disconnect()
         if notify_on_success:
-            await ctx.message.add_reaction("☑")
+            await MiscellaneousService.react(ctx)

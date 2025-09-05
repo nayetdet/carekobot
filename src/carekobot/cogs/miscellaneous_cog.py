@@ -13,3 +13,8 @@ class MiscellaneousCog(commands.Cog):
     @commands.command(aliases=["h"])
     async def help(self, ctx: commands.Context) -> None:
         await MiscellaneousService.help(ctx)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(aliases=["p"])
+    async def prefix(self, ctx: commands.Context, *, arg: str) -> None:
+        await MiscellaneousService.prefix(ctx, arg=arg)

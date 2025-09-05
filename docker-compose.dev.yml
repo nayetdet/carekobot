@@ -1,6 +1,21 @@
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: carekobot_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGODB_INIT_DATABASE: ${MONGODB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - carekobot_mongodb_data:/data/db
+
   kokoro:
     image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
     container_name: carekobot_kokoro
     ports:
       - "8880:8880"
+
+volumes:
+  carekobot_mongodb_data:

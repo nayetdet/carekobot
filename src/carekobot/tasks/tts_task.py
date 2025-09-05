@@ -1,19 +1,19 @@
 import asyncio
 import discord
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 from discord import Guild, VoiceClient
 from src.carekobot.utils.tts_utils import TTSUtils
 
 class TTSTask:
-    __queues: Dict[int, asyncio.Queue] = {}
-    __tasks: Dict[int, asyncio.Task] = {}
+    __queues: Dict[int, asyncio.Queue[Tuple[str, str]]] = {}
+    __tasks: Dict[int, asyncio.Task[None]] = {}
 
     @classmethod
-    async def add(cls, text: str, guild: Guild) -> None:
+    async def add(cls, guild: Guild, arg: str, voice: str) -> None:
         if guild.id not in cls.__queues:
             cls.__queues[guild.id] = asyncio.Queue()
 
-        await cls.__queues[guild.id].put(text.lower().strip())
+        await cls.__queues[guild.id].put((arg.lower().strip(), voice))
         if guild.id not in cls.__tasks or cls.__tasks[guild.id].done():
             cls.__tasks[guild.id] = asyncio.create_task(cls.play(guild))
 
@@ -34,13 +34,13 @@ class TTSTask:
             return
 
         while True:
-            text: str = await queue.get()
+            arg, voice = await queue.get()
             if not voice_client or not voice_client.is_connected():
                 queue.task_done()
                 await asyncio.sleep(1)
                 continue
 
-            async with TTSUtils.say(text) as fp:
+            async with TTSUtils.say(arg, voice=voice) as fp:
                 voice_client.play(discord.FFmpegPCMAudio(fp, pipe=True))
                 while voice_client.is_playing():
                     await asyncio.sleep(1)

@@ -1,20 +1,20 @@
-from contextlib import asynccontextmanager
 import aiohttp
 from io import BytesIO
-from typing import AsyncGenerator, Any
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Any, List
 from src.carekobot.config import Config
 
 class TTSUtils:
     @classmethod
     @asynccontextmanager
-    async def say(cls, text: str) -> AsyncGenerator[BytesIO, Any]:
+    async def say(cls, arg: str, voice: str) -> AsyncGenerator[BytesIO, Any]:
         fp: BytesIO = BytesIO()
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                url=f"{Config.BOT_TTS_API_URL}/v1/audio/speech",
+                url=f"{Config.TTS_API_URL}/v1/audio/speech",
                 json={
-                    "input": text,
-                    "voice": Config.BOT_TTS_VOICE_MODEL,
+                    "input": arg,
+                    "voice": voice,
                     "model": "kokoro",
                     "response_format": "mp3",
                     "lang_code": "p"
@@ -27,3 +27,10 @@ class TTSUtils:
         try: yield fp
         finally:
             fp.close()
+
+    @classmethod
+    async def voices(cls) -> List[str]:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{Config.TTS_API_URL}/v1/audio/voices") as response:
+                data = await response.json()
+                return data.get("voices", [])

@@ -5,13 +5,32 @@ services:
       dockerfile: ./docker/uv/Dockerfile
     container_name: carekobot
     depends_on:
+      mongodb:
+        condition: service_started
       kokoro:
         condition: service_started
     environment:
       BOT_DEFAULT_PREFIX: ${BOT_DEFAULT_PREFIX}
-      BOT_TTS_API_URL: ${BOT_TTS_API_URL}
-      BOT_TTS_VOICE_MODEL: ${BOT_TTS_VOICE_MODEL}
       BOT_DISCORD_TOKEN: ${BOT_DISCORD_TOKEN}
+      TTS_API_URL: http://kokoro:8880
+      TTS_DEFAULT_VOICE_MODEL: ${TTS_DEFAULT_VOICE_MODEL}
+      MONGODB_DATABASE: ${MONGODB_DATABASE}
+      MONGODB_HOST: mongodb
+      MONGODB_USERNAME: ${MONGODB_USERNAME}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    container_name: carekobot_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGODB_INIT_DATABASE: ${MONGODB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - carekobot_mongodb_data:/data/db
     restart: unless-stopped
 
   kokoro:
@@ -20,3 +39,6 @@ services:
     ports:
       - "8880:8880"
     restart: unless-stopped
+
+volumes:
+  carekobot_mongodb_data:
