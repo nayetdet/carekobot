@@ -7,6 +7,9 @@ class GuildConfig(Document):
     prefix: Optional[str]
     voice: Optional[str]
 
+    class Settings:
+        name: str = "guild_configs"
+
     def get_prefix(self) -> str:
         return self.prefix if self.prefix else Config.BOT_DEFAULT_PREFIX
 
