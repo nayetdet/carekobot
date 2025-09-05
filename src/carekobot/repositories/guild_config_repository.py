@@ -16,10 +16,6 @@ class GuildConfigRepository:
         return guild_config
 
     @classmethod
-    async def create(cls, guild_config: GuildConfig) -> GuildConfig:
-        return await guild_config.save()
-
-    @classmethod
     async def update_prefix(cls, guild_id: int, prefix: str) -> Optional[GuildConfig]:
         guild_config: GuildConfig = await cls.get(guild_id, auto_create=True)
         guild_config.prefix = prefix
