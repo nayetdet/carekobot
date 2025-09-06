@@ -1,6 +1,7 @@
 import re
 import discord
-from typing import List
+from typing import List, Optional
+from discord import VoiceClient
 from discord.ext import commands
 from src.carekobot.models.guild_config import GuildConfig
 from src.carekobot.repositories.guild_config_repository import GuildConfigRepository
@@ -21,10 +22,20 @@ class TTSService:
 
     @classmethod
     async def stop(cls, ctx: commands.Context) -> None:
+        voice_client: Optional[VoiceClient] = await VoiceChannelService.ensure_voice(ctx)
+        if not voice_client:
+            return
+
+        await MiscellaneousService.react(ctx)
         await TTSTask.stop(ctx.guild)
 
     @classmethod
     async def clear(cls, ctx: commands.Context) -> None:
+        voice_client: Optional[VoiceClient] = await VoiceChannelService.ensure_voice(ctx)
+        if not voice_client:
+            return
+
+        await MiscellaneousService.react(ctx)
         await TTSTask.clear(ctx.guild)
 
     @classmethod
@@ -69,3 +80,4 @@ class TTSService:
         )
 
         await ctx.send(embed=embed)
+        await MiscellaneousService.react(ctx)

@@ -63,6 +63,7 @@ class MiscellaneousService:
 
         embed.set_footer(text="CarekoBot • Um bot de TTS bem carequinha ao seu dispor!!!")
         await ctx.send(embed=embed)
+        await cls.react(ctx)
 
     @classmethod
     async def prefix(cls, ctx: commands.Context, *, arg: str) -> None:
