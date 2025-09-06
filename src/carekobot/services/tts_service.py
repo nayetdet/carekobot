@@ -13,7 +13,9 @@ from src.carekobot.utils.tts_utils import TTSUtils
 class TTSService:
     @classmethod
     async def say(cls, ctx: commands.Context, *, arg: str) -> None:
-        await VoiceChannelService.join(ctx, notify_on_success=False)
+        if not await VoiceChannelService.join(ctx, notify_on_success=False):
+            return
+
         for content, name in re.findall(r"(<:(\w+):\d+>)", arg):
             arg = arg.replace(content, name)
 
