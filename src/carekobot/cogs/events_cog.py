@@ -1,7 +1,6 @@
 import discord
 import logging
 from discord.ext import commands
-from src.carekobot.repositories.guild_config_repository import GuildConfigRepository
 from src.carekobot.services.events_service import EventsService
 
 class EventsCog(commands.Cog):
@@ -19,7 +18,6 @@ class EventsCog(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
         await EventsService.on_guild_remove(guild)
-        await GuildConfigRepository.delete(guild.id)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
