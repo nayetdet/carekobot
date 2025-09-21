@@ -1,4 +1,3 @@
-import re
 import asyncio
 import discord
 import logging
@@ -33,7 +32,7 @@ class EventsService:
                 description=(
                     f"✨ | Prefixo: `{guild_config.get_prefix()}`\n"
                     f"🎙️ | Voz padrão TTS: `{guild_config.get_voice()}`"
-                ),
+                )
             )
 
             embed.set_footer(text=f"ID do servidor: {message.guild.id}")
@@ -42,11 +41,14 @@ class EventsService:
 
     @classmethod
     async def on_message_edit(cls, bot: commands.Bot, _: discord.Message, after: discord.Message) -> None:
+        if after.author.bot:
+            return
+
         guild_config: GuildConfig = await GuildConfigRepository.get(after.guild.id)
         prefix: str = guild_config.get_prefix()
-        if re.search(rf"^{re.escape(prefix)}(say)?", after.content):
+        if after.content.startswith(prefix):
             ctx: commands.Context = await bot.get_context(after)
-            await TTSService.say(ctx, arg=after.content)
+            await bot.invoke(ctx)
 
     @classmethod
     async def on_voice_state_update(cls, bot: commands.Bot, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState) -> None:
